@@ -42,7 +42,7 @@ export default function DealsPage() {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-2xl font-bold text-white">Deals Pipeline</h1>
-          <p className="text-slate-400 mt-1">{deals.length} total deals &middot; ${deals.reduce((s, d) => s + Number(d.value || 0), 0).toLocaleString()} pipeline value</p>
+          <p className="text-slate-400 mt-1">{deals.length} total deals &middot; ₹{deals.reduce((s, d) => s + Number(d.value || 0), 0).toLocaleString()} pipeline value</p>
         </div>
         <Link href="/deals/new" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
@@ -54,20 +54,20 @@ export default function DealsPage() {
           const stageDeals = dealsByStage(stage);
           const colors = stageColors[stage];
           return (
-            <div key={stage} className={`flex-shrink-0 w-72 rounded-xl border ${colors.border} ${colors.bg}`}>
-              <div className={`${colors.header} rounded-t-xl px-4 py-3 flex items-center justify-between`}>
+            <div key={stage} className={`flex-shrink-0 w-72 rounded-xl border ₹{colors.border} ₹{colors.bg}`}>
+              <div className={`₹{colors.header} rounded-t-xl px-4 py-3 flex items-center justify-between`}>
                 <div className="flex items-center gap-2"><h3 className="text-sm font-bold text-white">{stage}</h3><span className="bg-white/20 text-white text-xs px-2 py-0.5 rounded-full">{stageDeals.length}</span></div>
-                <span className="text-xs text-white/80">${stageValue(stage).toLocaleString()}</span>
+                <span className="text-xs text-white/80">₹{stageValue(stage).toLocaleString()}</span>
               </div>
               <div className="p-3 space-y-3 min-h-[200px] max-h-[calc(100vh-300px)] overflow-y-auto">
                 {stageDeals.length === 0 ? <p className="text-slate-500 text-xs text-center py-8">No deals</p> : stageDeals.map((deal) => (
-                  <Link key={deal.id} href={`/deals/${deal.id}`} className="block bg-[#1e293b] rounded-lg p-4 border border-[#334155] hover:border-[#475569] transition-colors group">
+                  <Link key={deal.id} href={`/deals/₹{deal.id}`} className="block bg-[#1e293b] rounded-lg p-4 border border-[#334155] hover:border-[#475569] transition-colors group">
                     <h4 className="text-sm font-medium text-white group-hover:text-blue-400 transition-colors truncate">{deal.title}</h4>
                     <p className="text-xs text-slate-400 mt-1">{deal.contact?.name}</p>
                     <div className="flex items-center justify-between mt-3">
-                      <span className="text-sm font-semibold text-green-400">${Number(deal.value || 0).toLocaleString()}</span>
+                      <span className="text-sm font-semibold text-green-400">₹{Number(deal.value || 0).toLocaleString()}</span>
                       {deal.aiScore !== null && (
-                        <span className={`text-xs px-2 py-0.5 rounded-full ${deal.aiScore >= 75 ? "bg-green-500/20 text-green-300" : deal.aiScore >= 50 ? "bg-yellow-500/20 text-yellow-300" : "bg-red-500/20 text-red-300"}`}>Score: {deal.aiScore}</span>
+                        <span className={`text-xs px-2 py-0.5 rounded-full ₹{deal.aiScore >= 75 ? "bg-green-500/20 text-green-300" : deal.aiScore >= 50 ? "bg-yellow-500/20 text-yellow-300" : "bg-red-500/20 text-red-300"}`}>Score: {deal.aiScore}</span>
                       )}
                     </div>
                   </Link>
