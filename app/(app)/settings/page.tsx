@@ -2,37 +2,27 @@
 
 import { useEffect, useState } from "react";
 
-interface OrgInfo { name: string; plan: string; emailQuotaMonthly: number; aiQuotaMonthly: number; contactQuota: number; }
+interface OrgInfo { name: string; slug: string; plan: string; emailQuotaMonthly: number; aiQuotaMonthly: number; contactQuota: number; }
 interface UsageInfo { emailsSent: number; aiCalls: number; }
 
 export default function SettingsPage() {
   const [org, setOrg] = useState<OrgInfo | null>(null);
   const [usage, setUsage] = useState<UsageInfo | null>(null);
   const [loading, setLoading] = useState(true);
+  const [editing, setEditing] = useState(false);
+  const [orgName, setOrgName] = useState("");
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     async function load() {
       try {
-        const [contactsRes, analyticsRes] = await Promise.all([
-          fetch("/api/contacts"),
-          fetch("/api/analytics"),
-        ]);
-        const contacts = await contactsRes.json();
-        const analytics = await analyticsRes.json();
-
-        // We derive org info from what's available
-        setOrg({
-          name: "My Organization",
-          plan: "free",
-          emailQuotaMonthly: 50,
-          aiQuotaMonthly: 20,
-          contactQuota: 100,
-        });
-
-        setUsage({
-          emailsSent: analytics.totalSent || 0,
-          aiCalls: 0, // Would come from usage table
-        });
+        const res = await fetch("/api/settings");
+        if (res.ok) {
+          const data = await res.json();
+          setOrg(data.org);
+          setUsage(data.usage);
+          setOrgName(data.org.name);
+        }
       } catch (err) {
         console.error("Failed to load settings:", err);
       } finally {
@@ -41,6 +31,27 @@ export default function SettingsPage() {
     }
     load();
   }, []);
+
+  async function handleSaveName() {
+    if (!orgName.trim() || orgName === org?.name) { setEditing(false); return; }
+    setSaving(true);
+    try {
+      const res = await fetch("/api/settings", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: orgName }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setOrg((prev) => prev ? { ...prev, name: data.name } : prev);
+        setEditing(false);
+      }
+    } catch (err) {
+      console.error("Failed to save:", err);
+    } finally {
+      setSaving(false);
+    }
+  }
 
   if (loading) return <div className="flex items-center justify-center h-64"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div></div>;
 
@@ -54,7 +65,28 @@ export default function SettingsPage() {
         <div className="bg-[#1e293b] rounded-xl border border-[#334155] p-6">
           <h2 className="text-lg font-semibold text-white mb-4">Organization</h2>
           <div className="space-y-4">
-            <div className="flex items-center justify-between"><span className="text-sm text-slate-400">Name</span><span className="text-sm text-white font-medium">{org?.name || "N/A"}</span></div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-slate-400">Name</span>
+              {editing ? (
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={orgName}
+                    onChange={(e) => setOrgName(e.target.value)}
+                    className="bg-[#0f172a] border border-[#334155] rounded-lg px-3 py-1.5 text-sm text-white focus:outline-none focus:border-blue-500 w-48"
+                    autoFocus
+                    onKeyDown={(e) => { if (e.key === "Enter") handleSaveName(); if (e.key === "Escape") { setEditing(false); setOrgName(org?.name || ""); } }}
+                  />
+                  <button onClick={handleSaveName} disabled={saving} className="text-xs bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg disabled:opacity-50">{saving ? "..." : "Save"}</button>
+                  <button onClick={() => { setEditing(false); setOrgName(org?.name || ""); }} className="text-xs text-slate-400 hover:text-white px-2 py-1.5">Cancel</button>
+                </div>
+              ) : (
+                <button onClick={() => setEditing(true)} className="text-sm text-white font-medium hover:text-blue-400 transition-colors flex items-center gap-1.5">
+                  {org?.name || "N/A"}
+                  <svg className="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                </button>
+              )}
+            </div>
             <div className="flex items-center justify-between"><span className="text-sm text-slate-400">Plan</span><span className={`text-xs px-2.5 py-1 rounded-full font-medium ${planColors[org?.plan || "free"]}`}>{org?.plan || "free"}</span></div>
             <div className="flex items-center justify-between"><span className="text-sm text-slate-400">Email Quota</span><span className="text-sm text-white">{org?.emailQuotaMonthly || 50}/month</span></div>
             <div className="flex items-center justify-between"><span className="text-sm text-slate-400">AI Quota</span><span className="text-sm text-white">{org?.aiQuotaMonthly || 20}/month</span></div>
