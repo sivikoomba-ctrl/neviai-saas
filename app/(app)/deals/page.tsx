@@ -33,7 +33,7 @@ export default function DealsPage() {
   }, []);
 
   function dealsByStage(stage: string) { return deals.filter((d) => d.stage === stage); }
-  function stageValue(stage: string) { return dealsByStage(stage).reduce((s, d) => s + (d.value || 0), 0); }
+  function stageValue(stage: string) { return dealsByStage(stage).reduce((s, d) => s + Number(d.value || 0), 0); }
 
   if (loading) return <div className="flex items-center justify-center h-64"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div></div>;
 
@@ -42,7 +42,7 @@ export default function DealsPage() {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-2xl font-bold text-white">Deals Pipeline</h1>
-          <p className="text-slate-400 mt-1">{deals.length} total deals &middot; ${deals.reduce((s, d) => s + (d.value || 0), 0).toLocaleString()} pipeline value</p>
+          <p className="text-slate-400 mt-1">{deals.length} total deals &middot; ${deals.reduce((s, d) => s + Number(d.value || 0), 0).toLocaleString()} pipeline value</p>
         </div>
         <Link href="/deals/new" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
@@ -65,7 +65,7 @@ export default function DealsPage() {
                     <h4 className="text-sm font-medium text-white group-hover:text-blue-400 transition-colors truncate">{deal.title}</h4>
                     <p className="text-xs text-slate-400 mt-1">{deal.contact?.name}</p>
                     <div className="flex items-center justify-between mt-3">
-                      <span className="text-sm font-semibold text-green-400">${(deal.value || 0).toLocaleString()}</span>
+                      <span className="text-sm font-semibold text-green-400">${Number(deal.value || 0).toLocaleString()}</span>
                       {deal.aiScore !== null && (
                         <span className={`text-xs px-2 py-0.5 rounded-full ${deal.aiScore >= 75 ? "bg-green-500/20 text-green-300" : deal.aiScore >= 50 ? "bg-yellow-500/20 text-yellow-300" : "bg-red-500/20 text-red-300"}`}>Score: {deal.aiScore}</span>
                       )}
