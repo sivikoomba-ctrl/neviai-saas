@@ -12,6 +12,7 @@ export default function SettingsPage() {
   const [editing, setEditing] = useState(false);
   const [orgName, setOrgName] = useState("");
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     async function load() {
@@ -35,18 +36,22 @@ export default function SettingsPage() {
   async function handleSaveName() {
     if (!orgName.trim() || orgName === org?.name) { setEditing(false); return; }
     setSaving(true);
+    setError("");
     try {
       const res = await fetch("/api/settings", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: orgName }),
       });
+      const data = await res.json();
       if (res.ok) {
-        const data = await res.json();
         setOrg((prev) => prev ? { ...prev, name: data.name } : prev);
         setEditing(false);
+      } else {
+        setError(data.error || `Save failed (${res.status})`);
       }
     } catch (err) {
+      setError("Network error — could not reach server");
       console.error("Failed to save:", err);
     } finally {
       setSaving(false);
@@ -64,6 +69,7 @@ export default function SettingsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-[#1e293b] rounded-xl border border-[#334155] p-6">
           <h2 className="text-lg font-semibold text-white mb-4">Organization</h2>
+          {error && <div className="mb-4 text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">{error}</div>}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <span className="text-sm text-slate-400">Name</span>

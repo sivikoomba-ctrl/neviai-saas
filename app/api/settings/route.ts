@@ -37,7 +37,12 @@ export async function GET() {
 export async function PUT(request: Request) {
   try {
     let orgId: string;
-    try { orgId = await getOrgId(); } catch { return Response.json({ error: "Unauthorized" }, { status: 401 }); }
+    try {
+      orgId = await getOrgId();
+    } catch (authErr) {
+      console.error("PUT /api/settings auth error:", authErr);
+      return Response.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
     const body = await request.json();
     const { name } = body;
@@ -46,14 +51,21 @@ export async function PUT(request: Request) {
       return Response.json({ error: "Name is required" }, { status: 400 });
     }
 
+    console.log("PUT /api/settings: updating org", orgId, "to name:", name.trim());
+
     const org = await prisma.organization.update({
       where: { id: orgId },
       data: { name: name.trim() },
     });
 
+    console.log("PUT /api/settings: updated successfully to:", org.name);
+
     return Response.json({ name: org.name });
   } catch (error) {
     console.error("PUT /api/settings error:", error);
-    return Response.json({ error: "Failed to update settings" }, { status: 500 });
+    return Response.json(
+      { error: error instanceof Error ? error.message : "Failed to update settings" },
+      { status: 500 }
+    );
   }
 }
