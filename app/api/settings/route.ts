@@ -40,8 +40,9 @@ export async function PUT(request: Request) {
     try {
       orgId = await getOrgId();
     } catch (authErr) {
-      console.error("PUT /api/settings auth error:", authErr);
-      return Response.json({ error: "Unauthorized" }, { status: 401 });
+      const msg = authErr instanceof Error ? authErr.message : "Unauthorized";
+      console.error("PUT /api/settings auth error:", msg);
+      return Response.json({ error: msg }, { status: 401 });
     }
 
     const body = await request.json();

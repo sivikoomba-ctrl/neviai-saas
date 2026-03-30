@@ -5,16 +5,23 @@ export async function getOrgId(): Promise<string> {
   const supabase = await createClient();
   const {
     data: { user },
+    error: authError,
   } = await supabase.auth.getUser();
 
-  if (!user) throw new Error("Unauthorized");
+  if (!user) {
+    console.error("getOrgId: no user", authError?.message);
+    throw new Error(authError?.message || "Unauthorized");
+  }
 
   const membership = await prisma.membership.findFirst({
     where: { userId: user.id },
     select: { orgId: true },
   });
 
-  if (!membership) throw new Error("No organization");
+  if (!membership) {
+    console.error("getOrgId: no membership for user", user.id);
+    throw new Error("No organization");
+  }
   return membership.orgId;
 }
 
