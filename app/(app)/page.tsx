@@ -73,7 +73,7 @@ export default function Dashboard() {
   const statCards = [
     { label: "Total Contacts", value: totalContacts, color: "text-blue-400", bg: "bg-blue-500/10", icon: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" },
     { label: "Total Deals", value: totalDeals, color: "text-green-400", bg: "bg-green-500/10", icon: "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" },
-    { label: "Pipeline Value", value: `₹${pipelineValue.toLocaleString()}`, color: "text-yellow-400", bg: "bg-yellow-500/10", icon: "M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" },
+    { label: "Pipeline Value", value: `₹${pipelineValue.toLocaleString('en-IN')}`, color: "text-yellow-400", bg: "bg-yellow-500/10", icon: "M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" },
     { label: "Emails Sent", value: emailStats?.totalSent ?? 0, color: "text-violet-400", bg: "bg-violet-500/10", icon: "M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" },
     { label: "Open Rate", value: `${emailStats?.openRate ?? 0}%`, color: "text-amber-400", bg: "bg-amber-500/10", icon: "M15 12a3 3 0 11-6 0 3 3 0 016 0z" },
     { label: "Campaigns", value: emailStats?.totalCampaigns ?? 0, color: "text-emerald-400", bg: "bg-emerald-500/10", icon: "M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" },
@@ -154,7 +154,7 @@ export default function Dashboard() {
                       <p className="text-xs text-slate-400">{d.contact?.name}</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm font-semibold text-green-400">₹{(d.value || 0).toLocaleString()}</p>
+                      <p className="text-sm font-semibold text-green-400">₹{(d.value || 0).toLocaleString('en-IN')}</p>
                       <span className={`inline-block text-xs text-white px-2 py-0.5 rounded-full ${stageColors[d.stage] || "bg-slate-500"}`}>
                         {d.stage}
                       </span>

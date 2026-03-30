@@ -172,7 +172,7 @@ export default function ContactDetailPage({ params }: { params: Promise<{ id: st
                 <div className="space-y-3">{contact.deals.map((deal) => (
                   <Link key={deal.id} href={`/deals/${deal.id}`} className="flex items-center justify-between p-3 rounded-lg hover:bg-[#334155] transition-colors">
                     <div><p className="text-sm font-medium text-white">{deal.title}</p><p className="text-xs text-slate-400">{new Date(deal.createdAt).toLocaleDateString()}</p></div>
-                    <div className="text-right"><p className="text-sm font-semibold text-green-400">₹{deal.value.toLocaleString()}</p><span className={`text-xs text-white px-2 py-0.5 rounded-full ${stageColors[deal.stage] || "bg-slate-500"}`}>{deal.stage}</span></div>
+                    <div className="text-right"><p className="text-sm font-semibold text-green-400">₹{deal.value.toLocaleString('en-IN')}</p><span className={`text-xs text-white px-2 py-0.5 rounded-full ${stageColors[deal.stage] || "bg-slate-500"}`}>{deal.stage}</span></div>
                   </Link>
                 ))}</div>
               )}
@@ -204,7 +204,7 @@ export default function ContactDetailPage({ params }: { params: Promise<{ id: st
                   <div key={interaction.id} className="flex items-start gap-3 p-3 rounded-lg hover:bg-[#334155]/50 transition-colors">
                     <div className="p-2 bg-[#0f172a] rounded-lg shrink-0"><svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={typeIcons[interaction.type] || typeIcons.note} /></svg></div>
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2"><span className="text-xs font-medium text-blue-400 uppercase">{interaction.type}</span><span className="text-xs text-slate-500">{new Date(interaction.createdAt).toLocaleString()}</span></div>
+                      <div className="flex items-center gap-2"><span className="text-xs font-medium text-blue-400 uppercase">{interaction.type}</span><span className="text-xs text-slate-500">{new Date(interaction.createdAt).toLocaleString('en-IN')}</span></div>
                       {interaction.subject && <p className="text-sm font-medium text-white mt-0.5">{interaction.subject}</p>}
                       {interaction.body && <p className="text-sm text-slate-300 mt-1">{interaction.body}</p>}
                     </div>
@@ -230,7 +230,7 @@ export default function ContactDetailPage({ params }: { params: Promise<{ id: st
             <h3 className="text-sm font-semibold text-white mb-3">Quick Stats</h3>
             <div className="space-y-3">
               <div className="flex justify-between text-sm"><span className="text-slate-400">Total Deals</span><span className="text-white font-medium">{contact.deals.length}</span></div>
-              <div className="flex justify-between text-sm"><span className="text-slate-400">Pipeline Value</span><span className="text-green-400 font-medium">₹{contact.deals.reduce((s, d) => s + d.value, 0).toLocaleString()}</span></div>
+              <div className="flex justify-between text-sm"><span className="text-slate-400">Pipeline Value</span><span className="text-green-400 font-medium">₹{contact.deals.reduce((s, d) => s + d.value, 0).toLocaleString('en-IN')}</span></div>
               <div className="flex justify-between text-sm"><span className="text-slate-400">Interactions</span><span className="text-white font-medium">{contact.interactions.length}</span></div>
               <div className="flex justify-between text-sm"><span className="text-slate-400">Won Deals</span><span className="text-white font-medium">{contact.deals.filter((d) => d.stage === "Won").length}</span></div>
             </div>

@@ -71,7 +71,7 @@ export default function DealDetailPage({ params }: { params: Promise<{ id: strin
             <div className="flex items-start justify-between mb-6">
               <div>
                 <div className="flex items-center gap-3 mb-2"><h1 className="text-xl font-bold text-white">{deal.title}</h1><span className={`text-xs text-white px-3 py-1 rounded-full ${stageColors[deal.stage] || "bg-slate-500"}`}>{deal.stage}</span></div>
-                <p className="text-2xl font-bold text-green-400">₹{(deal.value || 0).toLocaleString()}</p>
+                <p className="text-2xl font-bold text-green-400">₹{(deal.value || 0).toLocaleString('en-IN')}</p>
               </div>
               <div className="flex gap-2">
                 <button onClick={() => setEditing(!editing)} className="text-slate-400 hover:text-blue-400 p-2 rounded-lg hover:bg-[#334155] transition-colors"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg></button>
