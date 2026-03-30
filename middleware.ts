@@ -37,16 +37,23 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Public routes that don't require authentication
-  const publicRoutes = ["/login", "/signup", "/api/stripe/webhook", "/"];
-  const isPublicRoute = publicRoutes.some(
-    (route) => pathname === route || pathname.startsWith("/api/stripe/webhook")
-  );
+  const isPublicRoute =
+    pathname === "/login" ||
+    pathname === "/signup" ||
+    pathname.startsWith("/api/auth/") ||
+    pathname.startsWith("/api/stripe/webhook");
 
-  // Redirect unauthenticated users from protected routes
-  if (!user && !isPublicRoute && pathname.startsWith("/(app)") ||
-      !user && !isPublicRoute && pathname.startsWith("/app")) {
+  // Redirect unauthenticated users to login
+  if (!user && !isPublicRoute) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
+    return NextResponse.redirect(url);
+  }
+
+  // Redirect authenticated users away from login/signup
+  if (user && (pathname === "/login" || pathname === "/signup")) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/";
     return NextResponse.redirect(url);
   }
 
