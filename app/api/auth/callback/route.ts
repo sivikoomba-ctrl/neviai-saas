@@ -12,7 +12,10 @@ export async function GET(request: NextRequest) {
     if (!error) {
       return NextResponse.redirect(`${origin}/`);
     }
+    console.error("OAuth callback error:", error.message, error);
+    return NextResponse.redirect(`${origin}/login?error=${encodeURIComponent(error.message)}`);
   }
 
-  return NextResponse.redirect(`${origin}/login?error=auth_failed`);
+  console.error("OAuth callback: no code param received");
+  return NextResponse.redirect(`${origin}/login?error=no_code_received`);
 }
